@@ -1,0 +1,394 @@
+/**************************************************************************************************************************************************************************
+ Question : Design a simple Gift Card Management System which you can gift to any one to make Purchase
+ 
+ There are Three bank account pre coded in as customers namely
+ 
+ CustId,  Acc No,    Name,      Balance,    Encrypted Password
+ 11,      11011,    "Kumar",    10000,      "ApipNbjm"   --------------------> ZohoMail
+ 22,      22022,    "Madhu",    20000,      "Cboljoh"    --------------------> Banking
+ 33,      33033,    "Robin",    30000,      "kbwb22"    --------------------> java11
+ 
+ you have to create a  system where
+ 1. Account Login
+ 2.  Purchase      -- will be shown as options
+ 
+ 
+ 1. Account Login
+     Now Login to your account and enter your Customer Id And Password
+     
+     Password encryption : 0->1,1->2,2->3......9->0  || a->b,b->c......z->a   || A>B,B->C......Z->A
+     
+     
+     1.Create new Gift Card
+     2.Top up existing Gift Card
+     3.Show Gift Card Transactions
+     4.Block a existing Gift Card
+     5.Logout
+     
+     
+     1.Create new Gift Card
+     now generate a gift card with 5 digits and its pin of four digits --> should be able to create N number of Gift cards as poosible
+     
+     2.Top up existing Gift Card
+     top up existing card using the balance in your account
+     
+     3.Show Gift Card Transactions
+     print all available Gift card Transactions
+     (Like credit ,debit, balance )
+     
+     4.Block a existing Gift Card
+     block the card and return back the amount to the account
+     
+     5. Logout
+ 
+2.Purchase
+
+    Get Gift Card Id
+    Get Gift Card Pin
+    Get Bill Amount
+   
+    Deduct the bill amount from the gift card and updtae the balance in the gift card
+   
+    if Bill amount is greater than Rs.100
+    add a reward point to the gift card and redeem the amount to balance if reward points is 10 ( 1 reward point is 1 rupee )
+   
+   
+Apply this for various Bank Accounts and check the details
+
+*****************************************************************************************************************************************************/
+
+
+
+
+import java.util.*;
+
+class Customer
+{
+    int CustId;
+    int AccNo;
+    String Name;
+    int Balance;
+    String pswd;
+   
+    Customer( int CustId,int AccNo,String Name,int Balance,String pswd )
+    {
+        this.CustId =CustId;
+        this.AccNo = AccNo;
+        this.Name = Name;
+        this.Balance = Balance;
+        this.pswd = pswd;
+    }
+}
+
+class giftCard
+{
+   
+    int giftId; int Cid; int GiftPin; int amt; int r;
+   
+    giftCard(int Cid,int giftId, int GiftPin,int amt,int r)
+    {
+        this.Cid = Cid;
+        this.giftId =giftId ;
+        this.GiftPin = GiftPin;
+        this.amt = amt;
+        this.r=r;
+       
+    }
+}
+
+class trans
+{
+    int Cid; int gid; int credit; int debit; int balance;
+   
+    trans(int Cid,int gid,int credit,int debit,int balance)
+    {
+        this.Cid = Cid;
+        this.gid = gid;
+        this.credit = credit;
+        this.gid = gid;
+        this.debit = debit;
+        this.balance = balance;
+       
+    }
+}
+
+
+public class Main
+{
+   static ArrayList <trans> a = new ArrayList<trans>();
+   static ArrayList <giftCard> gCards = new ArrayList<giftCard>();
+   static int id=12345;
+   static int pin=1233;
+
+    static String encrypt(String p)
+    {
+        String a="";
+        char c[] = p.toCharArray();
+       
+        for(int i=0;i<c.length;i++)
+        {
+            if(c[i]=='z')
+            {
+                c[i]='a';
+                a+=c[i];
+            }
+            else if(c[i]>='a'  && c[i]<'z')
+            {
+                c[i]=(  (char) ( (int) (c[i] +1) ) );
+                a+=c[i];
+            }
+            else if (c[i]=='Z')
+            {
+                c[i]='A';
+                a+=c[i];
+            }
+            else if(c[i]>='A'  && c[i]<'Z')
+            {
+                c[i]=(  (char) ( (int) (c[i] +1) ) );
+                a+=c[i];
+            }
+            else if (c[i]=='9')
+            {
+                c[i]='0';
+                a+=c[i];
+            }
+            else if(c[i] >='0' && c[i]<'9')
+            {
+                 c[i]=(  (char) ( (int) (c[i] +1) ) );
+                  a+=c[i];
+            }
+        }
+       
+        return a;
+    }
+
+public static void main(String[] args)
+{
+Scanner sc =new Scanner(System.in);
+Customer c [] = new Customer[3];
+c[0]=new Customer(11,11011,"Kumar",10000,"Apipbjm");
+c[1]=new Customer(22,22022,"Madhu",20000,"Cboljoh");
+c[2]=new Customer(33,33033,"Robin",30000,"kbwb22");
+boolean c1=true;
+while(c1==true)
+{
+   System.out.println(" 1.Account-Login \n 2.Purchase");
+   int c2=sc.nextInt();
+   switch(c2)
+   {
+       case 1:
+           {
+               boolean login =false;
+               System.out.println(" -------------- Enter your Customer ID --------------  ");
+               int custID=sc.nextInt();
+               sc.nextLine();
+               System.out.println(" -------------- Enter your Password  --------------  ");
+               String passW=sc.nextLine();
+               String passW1=encrypt(passW);
+               
+             for(int i=0;i<c.length;i++)
+             {
+                 if(  c[i].CustId==custID && c[i].pswd.equals(passW1)  )
+                 {   login =true;   }
+             }
+              if (login!=true)
+                      { System.out.println(" -------------- Invalid UserName or Password -------------- ");   break;  }
+            while (login==true)  
+          {
+              System.out.println
+("1.Create new Gift Card \n2.Top up existing Gift Card \n3.Show Gift Card Transactions \n4.Block a existing Gift Card \n5.Logout ");
+               int c3 =sc.nextInt();
+               
+                         switch(c3)
+                      {
+                       case 1:
+                           {
+                               System.out.println(" ---- Create new Gift Card ---- ");
+                               System.out.println("Gift Card Id "+id);
+                               System.out.println("Gift Card Pin "+pin);
+                               System.out.println(pin);
+                               System.out.println("Gift Card amt "+ 0 );
+                               gCards.add(new giftCard(custID,id,pin,0,0) );
+                               a.add(new trans(custID,id,0,0,0));
+                               id++; pin++;
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                               break;
+                           }
+                         
+                       case 2:
+                           {
+                               int TopAmt=0; int balAcc=0;     boolean gift =false;  int bal=0;
+                               
+                                System.out.println(" ---- Top up existing Gift Card ---- ");
+                               
+                                System.out.println("-- Enter Gift Card Id-- ");
+                                int Gid = sc.nextInt();
+                             
+                                System.out.println("-- Enter Top Up Amount-- ");
+                                TopAmt=sc.nextInt();
+                               
+                                for(int i=0;i<c.length;i++)
+                                     {
+                                         if(c[i].CustId==custID   &&  TopAmt<=c[i].Balance)
+                                            { gift=true; c[i].Balance=c[i].Balance-TopAmt;  balAcc=c[i].Balance;  }
+                                     }
+                               
+                                if(gift== true)
+                                {
+                                   
+                                    for( giftCard g : gCards)
+                                        {
+                                            if(g.Cid==custID  && g.giftId==Gid)
+                                            {
+                                                g.amt+=TopAmt;
+                                                bal=g.amt;
+                                                System.out.println("Toped UP Balance in gift card  is  "+g.amt);
+                                            }
+                                        }
+                                   
+                                   
+                                    a.add(new trans(custID,Gid,TopAmt,0,bal)  );
+                                            System.out.println("Avaialable balance in Your Account is "+balAcc);
+                                }  
+                               
+                                else
+                                { System.out.println("No Such Gift card Found or Insufficent Balance in your account  ");  }
+                                       
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                                break;
+                           }
+                         
+                       case 3:
+                           {
+                                System.out.println(" ---- Show Gift Card Transactions ---- ");
+System.out.println("Cid"+"    "+"GiftId" +"       " + "Credit"+ "              " + "Debit"+ "             " + "Balance");    
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                                for( trans t : a)
+ {  
+                                        if(   t.Cid==custID  )    
+                                         {
+                                             
+System.out.println(t.Cid+"   "+t.gid +"           " + t.credit+ "              " + t.debit+ "              " + t.balance);
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                              }  
+     
+ }
+                                break;
+                           }
+                       case 4:
+                           {
+                                System.out.println(" ---- Block a existing Gift Card ---- ");
+                                System.out.println(" -- Enter Gift Card Id -- ");
+                                int Gid = sc.nextInt();
+                               
+                                int TransferAmt=0,b=0;
+                                int index=-1;
+                                for( giftCard g : gCards)
+                                {
+                                    if(g.Cid==custID  && g.giftId==Gid  )
+                                    { TransferAmt=g.amt;  g.amt=0;  index=gCards.indexOf(g);break;}
+                                }
+                                if(index>=0)
+                                 {  gCards.remove(index);
+                                for(int i=0;i<c.length;i++)
+                                 {
+                                     if(c[i].CustId==custID     )
+                                     { c[i].Balance+=TransferAmt; b=c[i].Balance;break; }
+                                 }
+                                 
+                                a.add(new trans(custID,Gid,0,0,0) );
+                                System.out.println(" --------------------------Gift Card Blocked SuccessFully ");
+                                System.out.println("Balance in your Account is " + b );
+                                 }
+                                 else
+                                 { System.out.println("No Such Gift card Found"); }
+System.out.println("-------------------------------------------------------------------------------------------------------------");                              
+                                break;
+                           }
+                         
+                       case 5:
+                           {
+                                System.out.println(" ---- Logout ---- ");
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                                login=false;
+                                break;
+                           }
+                           
+                       default :
+                           {  
+                               System.out.println(" ---- Wrong Command ---- ");
+                               System.out.println(" ---- Logout ---- "); login=false;
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+                               break;}
+                         
+                      }
+             }
+           }
+           break;
+       case 2:
+           {
+               System.out.println(" -------------- Purchase -------------- ");
+               System.out.println("-- Enter Gift Card Id-- ");
+                int Gid = sc.nextInt();
+                System.out.println("-- Enter Gift Card Pin-- ");
+                int GPin = sc.nextInt();
+                int bal=0,custID=0, billAmt=0;
+                boolean log =false;
+                for( giftCard g : gCards)
+             {
+                 if(   g.giftId==Gid  )
+                     {
+                          log  =true;
+                          if(GPin==g.GiftPin)
+                              {
+                                           
+                                   custID=g.Cid;
+                                   System.out.println("-- Enter Bill Amount --");
+                                   billAmt =sc.nextInt();
+                                   
+                                    if(    billAmt<=g.amt  &&   billAmt>0  )
+                                    {
+                                        g.amt-=billAmt; bal=g.amt;
+                                       
+                                        if(billAmt>=100)
+                                        {      g.r++;      }
+                                       
+                                        if(g.r>=10)
+                                        {
+                                            g.amt+=g.r;
+                                            System.out.println("Credit points redeeemed to your account ");
+                                            g.r=0;
+                                        }
+                                         System.out.println(" Balance in gift card  is  "+g.amt);
+                                         System.out.println("Credit point "+g.r);
+                                    }
+                                    else
+                                       {   System.out.println(" ---- Insufficent Balance ----");     }
+                                           
+                                }
+                               
+                                 else
+                                    {    System.out.println("  Invalid   Password  ");    }
+                                       
+                       }
+                       if(log==false)
+                       {  System.out.println("Invalid User  Name"); }
+                                   
+            }
+                                a.add(new trans(custID,Gid,0,billAmt,bal) );
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+               break;
+           }
+       default :
+       {
+System.out.println("-------------------------------------------------------------------------------------------------------------");
+       break;
+           
+       }
+   }
+}
+}
+
+}
+//**************************************************************************************************************************************************************************
+
